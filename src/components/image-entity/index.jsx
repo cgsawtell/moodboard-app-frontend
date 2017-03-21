@@ -3,14 +3,13 @@ import { Group,Rect, Image } from 'react-konva';
 import EntityResizer from '../entity-resizer';
 
 class ImageEntity extends Component {
+  
   render() {
     const scale = 0.3
     const resizeHitzoneSize = 30
-    const { entity, image, updateEntityPos, updateEntityScale} = this.props
-    const imageDimentions = {
-      width:image ? image.width:0,
-      height:image ? image.height:0      
-    }
+    const { entity, image, updateEntityPos, updateEntityScale } = this.props
+    const imageHeight = image.naturalHeight
+    const imageWidth = image.naturalWidth
     return (
       <Group
           x={entity.x}
@@ -27,9 +26,9 @@ class ImageEntity extends Component {
           image={image}
         />
         <EntityResizer entity={entity} updateEntityScale={updateEntityScale} x={0} y={0} resizeHitzoneSize={resizeHitzoneSize}/>
-        <EntityResizer entity={entity} updateEntityScale={updateEntityScale} x={imageDimentions.width-resizeHitzoneSize} y={0} resizeHitzoneSize={resizeHitzoneSize}/>
-        <EntityResizer entity={entity} updateEntityScale={updateEntityScale} x={0} y={imageDimentions.height-resizeHitzoneSize} resizeHitzoneSize={resizeHitzoneSize}/>
-        <EntityResizer entity={entity} updateEntityScale={updateEntityScale} x={imageDimentions.width-resizeHitzoneSize} y={imageDimentions.height-resizeHitzoneSize} resizeHitzoneSize={resizeHitzoneSize}/>
+        <EntityResizer entity={entity} updateEntityScale={updateEntityScale} x={imageWidth-resizeHitzoneSize} y={0} resizeHitzoneSize={resizeHitzoneSize}/>
+        <EntityResizer entity={entity} updateEntityScale={updateEntityScale} x={0} y={imageHeight-resizeHitzoneSize} resizeHitzoneSize={resizeHitzoneSize}/>
+        <EntityResizer entity={entity} updateEntityScale={updateEntityScale} x={imageWidth-resizeHitzoneSize} y={imageHeight-resizeHitzoneSize} resizeHitzoneSize={resizeHitzoneSize}/>
       </Group>
     );
   }
