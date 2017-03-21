@@ -53,6 +53,9 @@ class BoardRenderer extends Component {
               entity => {
                 switch (entity.type) {
                   case 'image':
+                    if(images[entity.id] === undefined){
+                      return
+                    }
                     return (
                       <ImageEntity
                         key={entity.id}
