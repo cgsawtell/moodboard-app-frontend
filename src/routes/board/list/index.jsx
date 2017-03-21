@@ -26,7 +26,7 @@ class BoardListRoute extends Component {
       <div>
         <div><input type="button" onClick={this.newBoard} value={"New Board"}/></div>
         {
-          this.state.boards.map( board =>{
+          this.state.boards.map( board => {
             return (
               <div key={board._id} onClick={e=>{this.props.router.push(`/board/${board._id}`)}}>
                 <p>{board.name}</p>
