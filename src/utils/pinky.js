@@ -1,12 +1,13 @@
 /**
  * A utility function that wraps a callback style function in a promise.
- * @param {*callback function that need to be wrapped in promise} func 
  * @param {*context that the function is run in} context 
+ * @param {*callback function that need to be wrapped in promise} func 
+ * @param {*the paramerters to be passed to the function to be run} params
  * @returns promise
  */
-const pinky = (func, context) => {
+export const call = (context, func, params = []) => {
     const handlePromise = (resolve, reject) => {
-      func.call(context,
+      func.call(context, ...params,
         (...callbackArgs) => {
           resolve(callbackArgs)
         }
@@ -16,4 +17,15 @@ const pinky = (func, context) => {
     return promise
 }
 
-export default pinky
+// takes function as param
+// sets function as a resolve
+// returns a promse so we can await
+
+export const wait = (functionToWaitFor) => {
+  const handlePromise = (resolve, reject) => {
+    functionToWaitFor = ( ) => {
+      resolve()
+    }
+  }
+  return new Promise(handlePromise)
+}

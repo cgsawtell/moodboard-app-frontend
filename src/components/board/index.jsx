@@ -4,7 +4,7 @@ import { each, cloneDeep } from 'lodash';
 import shortid from 'shortid'
 import fileType from 'file-type'
 import BoardRenderer from '../board-renderer'
-import pinky from '../../utils/pinky'
+import {call, wait} from '../../utils/pinky'
 
 class Board extends Component {
   constructor(props) {
@@ -157,7 +157,7 @@ class Board extends Component {
     })
   }
   dataTransferItemToString(item){
-    return pinky(item.getAsString, item)
+    return call(item, item.getAsString)
   }
   processFiles(files, dropPosition){
     each( 
