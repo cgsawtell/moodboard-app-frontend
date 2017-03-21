@@ -117,18 +117,22 @@ class Board extends Component {
     e.preventDefault()
     e.stopPropagation()
   }
-  handleDrop(e){
+  async handleDrop(e){
     e.preventDefault()
     e.stopPropagation()
+    let dropPosition = {}
+    dropPosition.x = e.x
+    dropPosition.y = e.y
+    
     if(e.dataTransfer.files.length){
-      this.processFiles(e.dataTransfer.files);
+      this.processFiles(e.dataTransfer.files, dropPosition);
       return
     }
     if(e.dataTransfer.items.length){
-      this.processDataTransferItems(e.dataTransfer.items)
+      this.processDataTransferItems(e.dataTransfer.items, dropPosition)
     }
   }
-  processDataTransferItems(items){
+  processDataTransferItems(items, dropPosition){
     each(items, async item => {
       console.log('item.type',item.type);
       switch (item.type) {
@@ -139,8 +143,9 @@ class Board extends Component {
             case 'image/png':
             case 'image/jpeg':
             case 'image/gif':
+            case 'image/webp':            
               const downloadRequest = await post(`/api/file/download?url=${url}`)
-              this.createAndSaveImageEntity(downloadRequest.data.fileUrl)
+              this.createAndSaveImageEntity({url:downloadRequest.data.fileUrl, dropPosition})
               break;
             default:
               break;
@@ -154,7 +159,7 @@ class Board extends Component {
   dataTransferItemToString(item){
     return pinky(item.getAsString, item)
   }
-  processFiles(files){
+  processFiles(files, dropPosition){
     each( 
       files,
       file => {
@@ -162,7 +167,8 @@ class Board extends Component {
           case 'image/png':
           case 'image/jpeg':
           case 'image/gif':
-            this.handleImageFile(file)
+          case 'image/webp':
+            this.handleImageFile(file, dropPosition)
             break;
         
           default:
@@ -172,22 +178,25 @@ class Board extends Component {
       }
     )
   }
-  handleImageFile(file){
+  handleImageFile(file, dropPosition){
     const url = URL.createObjectURL(file)
-    this.createAndSaveImageEntity(url, file)
+    this.createAndSaveImageEntity({url, file, dropPosition})
   }
-  createAndSaveImageEntity(url, file = undefined){
-    const newImageEntity = this.createImageEntity(url)
+  createAndSaveImageEntity({url, file = undefined, dropPosition}){
+    const newImageEntity = this.createImageEntity(url, dropPosition)
     this.addEntityToState(newImageEntity);
     this.addImageObject(newImageEntity.id, url)
     this.persistEntity(newImageEntity, file)
   }
-  createImageEntity(url){
+  createImageEntity(url, dropPosition){
+    const {x,y} = dropPosition
     return {
       type: "image",
       id: shortid.generate(),
       scale: 1,
-      url
+      url,
+      x,
+      y
     }
   }
   addImageObject(id, url){
@@ -205,7 +214,7 @@ class Board extends Component {
   }
   async persistEntity(entity, file){
     const boardId = this.state._id
-    if(file){
+    if (file) {
       let data = new FormData()
       data.append('file',file)
       const fileUpload = await post('/api/file/upload', data, {headers:{"content-type":"multipart/form-data"}})
