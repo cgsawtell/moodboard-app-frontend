@@ -199,17 +199,18 @@ class Board extends Component {
       y
     }
   }
-  addImageObject(id, url){
+  async addImageObject(id, url){
     const image = new Image()
     image.src = url
-    const imageObject = {[id]:image}
-    const images = {...this.state.images, ...imageObject}
-    this.setState({images})
+    image.onload = () => {
+      const imageObject = {[id]:image}
+      const images = {...this.state.images, ...imageObject}
+      this.setState({images})
+    }
   }
   addEntityToState(newEntity){
     const oldEntities = this.state.entities
     const entities = [...oldEntities, newEntity]
-    console.log(newEntity);
     this.setState({entities})
   }
   async persistEntity(entity, file){
