@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import {Stage, Layer} from 'react-konva';
 import ImageEntity from '../image-entity';
+import { registerStage, unregisterStage } from '../../utils/stage'
 
 class BoardRenderer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       zoomLevel: 1,
-      inputPosition:{x:0,y:0},
     }
     this.zoomStage = this.zoomStage.bind(this)
-    this.saveMousePosition = this.saveMousePosition.bind(this)
   }
-  saveMousePosition(e){
-    // console.log(e.clientX);
+  componentDidMount() {
+    registerStage(this.stageComponent)
+  }
+  componentWillUnmount() {
+    unregisterStage()
   }
   zoomStage(e){
     e.preventDefault()
@@ -21,7 +23,7 @@ class BoardRenderer extends Component {
     const minZoomLevel = 0.009
     const oldZoomLevel = this.state.zoomLevel
     let newZoomLevel = oldZoomLevel + e.deltaY * sensitivity
-    if(newZoomLevel<minZoomLevel){ newZoomLevel = minZoomLevel}
+    if(newZoomLevel < minZoomLevel){ newZoomLevel = minZoomLevel}
     const stage = this.stageComponent.getStage()
     const mousePointTo = {
       x: stage.getPointerPosition().x / oldZoomLevel - stage.x() / oldZoomLevel,

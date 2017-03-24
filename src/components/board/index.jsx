@@ -4,6 +4,7 @@ import { each, cloneDeep } from 'lodash';
 import shortid from 'shortid'
 import fileType from 'file-type'
 import BoardRenderer from '../board-renderer'
+import {windowPositionToStagePosition} from '../../utils/stage'
 import {call, wait} from '../../utils/pinky'
 
 class Board extends Component {
@@ -120,10 +121,7 @@ class Board extends Component {
   async handleDrop(e){
     e.preventDefault()
     e.stopPropagation()
-    let dropPosition = {}
-    dropPosition.x = e.x
-    dropPosition.y = e.y
-    
+    let dropPosition = windowPositionToStagePosition(e.x, e.y)
     if(e.dataTransfer.files.length){
       this.processFiles(e.dataTransfer.files, dropPosition);
       return
