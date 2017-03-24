@@ -8,8 +8,8 @@ class ImageEntity extends Component {
     const scale = 0.3
     const resizeHitzoneSize = 30
     const { entity, image, updateEntityPos, updateEntityScale } = this.props
-    const imageHeight = image.naturalHeight
-    const imageWidth = image.naturalWidth
+    const imageHeight = image.height
+    const imageWidth = image.width
     return (
       <Group
           x={entity.x}
